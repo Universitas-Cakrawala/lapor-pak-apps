@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     height: 80,
                                     decoration: BoxDecoration(
                                       color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(8),
                                       image: r.photoUrls.isNotEmpty
                                           ? DecorationImage(
                                               image: NetworkImage(MediaHelper.displayUrl(r.photoUrls.first)),
@@ -176,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.civicBlue,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: const [
           BoxShadow(color: Colors.black12, blurRadius: 10, offset: Offset(0, 4)),
         ],
@@ -211,8 +211,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildStatCard(String title, String count, IconData icon, Color color) {
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
@@ -229,30 +227,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStatusBadge(String status) {
-    Color color;
+    Color bgColor;
+    Color fgColor;
     switch (status) {
       case 'MENUNGGU':
-        color = AppColors.statusMenungguFg;
+        bgColor = AppColors.statusMenungguBg;
+        fgColor = AppColors.statusMenungguFg;
         break;
       case 'DIPROSES':
-        color = AppColors.statusDiprosesFg;
+        bgColor = AppColors.statusDiprosesBg;
+        fgColor = AppColors.statusDiprosesFg;
         break;
       case 'SELESAI':
-        color = AppColors.statusSelesaiFg;
+        bgColor = AppColors.statusSelesaiBg;
+        fgColor = AppColors.statusSelesaiFg;
         break;
       default:
-        color = Colors.grey;
+        bgColor = Colors.grey.shade300;
+        fgColor = Colors.black87;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(9999),
       ),
       child: Text(
         status,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: fgColor),
       ),
     );
   }

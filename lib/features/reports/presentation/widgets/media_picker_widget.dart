@@ -149,17 +149,17 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
               if (_photos.length < 5)
                 InkWell(
                   onTap: () => _showSourceDialog(false),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(8),
                   child: Container(
                     width: 80,
                     height: 80,
                     margin: const EdgeInsets.only(right: 12),
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[300]!),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.outline),
                     ),
-                    child: const Icon(Icons.add_a_photo, color: Colors.grey),
+                    child: const Icon(Icons.add_a_photo, color: AppColors.outline),
                   ),
                 )
             ],
@@ -179,14 +179,14 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
         else
           InkWell(
             onTap: () => _showSourceDialog(true),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             child: Container(
               width: double.infinity,
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[300]!, style: BorderStyle.solid),
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: AppColors.outline),
               ),
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -213,7 +213,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
             width: double.infinity,
             height: double.infinity,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               color: Colors.black12,
               image: isVideo
                   ? null

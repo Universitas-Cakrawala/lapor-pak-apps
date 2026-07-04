@@ -143,10 +143,8 @@ class _ReportListScreenState extends State<ReportListScreen> {
                       final r = state.reports[i];
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        elevation: 2,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(8),
                           onTap: () => context.push('/reports/${r.id}'),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -212,30 +210,34 @@ class _ReportListScreenState extends State<ReportListScreen> {
   }
 
   Widget _buildStatusBadge(String status) {
-    Color color;
+    Color bgColor;
+    Color fgColor;
     switch (status) {
       case 'MENUNGGU':
-        color = AppColors.statusMenungguFg;
+        bgColor = AppColors.statusMenungguBg;
+        fgColor = AppColors.statusMenungguFg;
         break;
       case 'DIPROSES':
-        color = AppColors.statusDiprosesFg;
+        bgColor = AppColors.statusDiprosesBg;
+        fgColor = AppColors.statusDiprosesFg;
         break;
       case 'SELESAI':
-        color = AppColors.statusSelesaiFg;
+        bgColor = AppColors.statusSelesaiBg;
+        fgColor = AppColors.statusSelesaiFg;
         break;
       default:
-        color = Colors.grey;
+        bgColor = Colors.grey.shade300;
+        fgColor = Colors.black87;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(9999),
       ),
       child: Text(
         status,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: fgColor),
       ),
     );
   }

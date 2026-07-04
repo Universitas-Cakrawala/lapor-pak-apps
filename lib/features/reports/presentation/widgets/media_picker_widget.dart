@@ -4,6 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../media/utils/media_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MediaPickerWidget extends StatefulWidget {
   final Function(List<File> photos, File? video) onMediaChanged;
@@ -27,8 +29,17 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
     try {
       final pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
+        File finalFile;
+        if (kIsWeb) {
+          finalFile = File(pickedFile.path);
+        } else {
+          final tempDir = await getTemporaryDirectory();
+          final uniqueName = '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
+          final safeFile = File('${tempDir.path}/$uniqueName');
+          finalFile = await File(pickedFile.path).copy(safeFile.path);
+        }
         setState(() {
-          _photos.add(File(pickedFile.path));
+          _photos.add(finalFile);
         });
         widget.onMediaChanged(_photos, _video);
       }
@@ -45,9 +56,18 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
     try {
       final pickedFile = await _picker.pickVideo(source: source);
       if (pickedFile != null) {
-        final file = File(pickedFile.path);
+        File finalFile;
+        if (kIsWeb) {
+          finalFile = File(pickedFile.path);
+        } else {
+          final tempDir = await getTemporaryDirectory();
+          final uniqueName = '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
+          final safeFile = File('${tempDir.path}/$uniqueName');
+          finalFile = await File(pickedFile.path).copy(safeFile.path);
+        }
+        
         // Validasi ukuran video di klien (< 10MB)
-        final int fileLength = kIsWeb ? (await file.readAsBytes()).length : file.lengthSync();
+        final int fileLength = kIsWeb ? (await finalFile.readAsBytes()).length : finalFile.lengthSync();
         if (fileLength > MediaHelper.maxVideoBytes) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -57,7 +77,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
           return;
         }
         setState(() {
-          _video = file;
+          _video = finalFile;
         });
         widget.onMediaChanged(_photos, _video);
       }
@@ -202,7 +222,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
                       fit: BoxFit.cover,
                     ),
             ),
-            child: isVideo ? const Icon(Icons.videocam, size: 40, color: Colors.grey) : null,
+            child: isVideo ? VideoThumbnailWidget(file: file) : null,
           ),
           Positioned(
             top: 4,
@@ -216,6 +236,73 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
               ),
             ),
           )
+        ],
+      ),
+    );
+  }
+}
+
+class VideoThumbnailWidget extends StatefulWidget {
+  final File file;
+  const VideoThumbnailWidget({super.key, required this.file});
+
+  @override
+  State<VideoThumbnailWidget> createState() => _VideoThumbnailWidgetState();
+}
+
+class _VideoThumbnailWidgetState extends State<VideoThumbnailWidget> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = kIsWeb
+        ? VideoPlayerController.networkUrl(Uri.parse(widget.file.path))
+        : VideoPlayerController.file(widget.file);
+        
+    _controller.initialize().then((_) {
+      if (mounted) {
+        setState(() {
+          _initialized = true;
+        });
+      }
+    }).catchError((_) {
+      // Ignore initialization errors
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_initialized) {
+      return const Center(
+        child: Icon(Icons.videocam, size: 40, color: Colors.grey),
+      );
+    }
+    
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          FittedBox(
+            fit: BoxFit.cover,
+            child: SizedBox(
+              width: _controller.value.size.width,
+              height: _controller.value.size.height,
+              child: VideoPlayer(_controller),
+            ),
+          ),
+          Container(
+            color: Colors.black26,
+            child: const Icon(Icons.play_circle_outline, color: Colors.white, size: 32),
+          ),
         ],
       ),
     );

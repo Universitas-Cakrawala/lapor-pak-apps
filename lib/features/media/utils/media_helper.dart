@@ -35,7 +35,8 @@ class MediaHelper {
     
     // Create temporary path
     final dir = await getTemporaryDirectory();
-    final targetPath = '${dir.path}/temp_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final uniqueId = '${DateTime.now().millisecondsSinceEpoch}_${file.path.hashCode}';
+    final targetPath = '${dir.path}/temp_$uniqueId.jpg';
 
     // Loop quality: 80 -> 60 -> 40
     for (int i = 0; i < 3; i++) {

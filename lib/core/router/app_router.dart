@@ -69,7 +69,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/reports', 
-      builder: (c, s) => BlocProvider(create: (_) => sl<ReportListCubit>(), child: const ReportListScreen()),
+      builder: (c, s) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => sl<ReportListCubit>()),
+          BlocProvider(create: (_) => sl<ProfileCubit>()..fetchProfile()),
+        ],
+        child: const ReportListScreen(),
+      ),
     ),
     GoRoute(
       path: '/reports/:id', 

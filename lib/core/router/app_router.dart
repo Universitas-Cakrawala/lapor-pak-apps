@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-// Placeholder screens for routing skeleton
-class SplashScreen extends StatelessWidget { const SplashScreen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Splash Screen'))); }
-class RegisterScreen extends StatelessWidget { const RegisterScreen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Register Screen'))); }
-class LoginScreen extends StatelessWidget { const LoginScreen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Login Screen'))); }
+import '../di/service_locator.dart';
+import '../../features/auth/presentation/bloc/auth_cubit.dart';
+import '../../features/auth/presentation/pages/splash_screen.dart';
+import '../../features/auth/presentation/pages/login_screen.dart';
+import '../../features/auth/presentation/pages/register_screen.dart';
+
+// Placeholder screens for routing skeleton (Sisa modul lain)
 class HomeScreen extends StatelessWidget { const HomeScreen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Home Screen'))); }
 class ReportFormStep1Screen extends StatelessWidget { const ReportFormStep1Screen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Report Step 1'))); }
 class ReportFormStep2Screen extends StatelessWidget { const ReportFormStep2Screen({super.key}); @override Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('Report Step 2'))); }
@@ -17,9 +21,18 @@ class AdminUpdateStatusScreen extends StatelessWidget { final String id; const A
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
   routes: [
-    GoRoute(path: '/splash', builder: (c, s) => const SplashScreen()),
-    GoRoute(path: '/register', builder: (c, s) => const RegisterScreen()),
-    GoRoute(path: '/login', builder: (c, s) => const LoginScreen()),
+    GoRoute(
+      path: '/splash', 
+      builder: (c, s) => BlocProvider(create: (_) => sl<AuthCubit>(), child: const SplashScreen()),
+    ),
+    GoRoute(
+      path: '/register', 
+      builder: (c, s) => BlocProvider(create: (_) => sl<AuthCubit>(), child: const RegisterScreen()),
+    ),
+    GoRoute(
+      path: '/login', 
+      builder: (c, s) => BlocProvider(create: (_) => sl<AuthCubit>(), child: const LoginScreen()),
+    ),
     GoRoute(path: '/home', builder: (c, s) => const HomeScreen()),
     GoRoute(path: '/reports/new/step1', builder: (c, s) => const ReportFormStep1Screen()),
     GoRoute(path: '/reports/new/step2', builder: (c, s) => const ReportFormStep2Screen()),

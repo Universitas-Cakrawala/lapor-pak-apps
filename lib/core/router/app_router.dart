@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,8 +22,8 @@ import '../../features/reports/presentation/bloc/report_form_cubit.dart';
 import '../../features/reports/presentation/pages/admin_update_status_screen.dart';
 import '../../features/reports/presentation/bloc/admin_update_status_cubit.dart';
 
-// Placeholder screens for routing skeleton (Admin)
-class AdminDashboardScreen extends StatelessWidget { const AdminDashboardScreen({super.key}); @override Widget build(BuildContext context) => Scaffold(body: Center(child: ElevatedButton(onPressed: () => context.push('/profile'), child: const Text('Ke Profil (Admin)')))); }
+import '../../features/reports/presentation/pages/admin_dashboard_screen.dart';
+import '../../features/reports/presentation/bloc/dashboard_cubit.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
@@ -68,7 +68,10 @@ final GoRouter appRouter = GoRouter(
       path: '/reports/:id', 
       builder: (c, s) => BlocProvider(create: (_) => sl<ReportDetailCubit>(), child: ReportDetailScreen(id: s.pathParameters['id']!)),
     ),
-    GoRoute(path: '/admin/dashboard', builder: (c, s) => const AdminDashboardScreen()),
+    GoRoute(
+      path: '/admin/dashboard', 
+      builder: (c, s) => BlocProvider(create: (_) => sl<DashboardCubit>(), child: const AdminDashboardScreen()),
+    ),
     GoRoute(
       path: '/admin/reports/:id/status', 
       builder: (c, s) => BlocProvider(create: (_) => sl<AdminUpdateStatusCubit>(), child: AdminUpdateStatusScreen(id: s.pathParameters['id']!)),

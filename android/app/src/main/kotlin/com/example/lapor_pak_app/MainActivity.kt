@@ -1,4 +1,4 @@
-package com.example.lapor_pak_app
+package com.laporpak.app
 
 import io.flutter.embedding.android.FlutterActivity
 

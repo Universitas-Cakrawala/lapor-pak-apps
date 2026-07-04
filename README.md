@@ -75,7 +75,7 @@ Setiap fitur memiliki struktur spesifik dengan pemisahan *layer* fungsional: `da
 
 ## 🤝 Kontribusi & Lisensi
 
-Aplikasi ini dikembangkan dan dirancang khusus sebagai bentuk pemenuhan Tugas Akhir Proyek mata kuliah Mobile Computing, Universitas Cakrawala (Kelompok 5). Segala bentuk fitur telah disesuaikan dengan *Product Requirements Document* (PRD) v1.3.
+Aplikasi ini dikembangkan dan dirancang khusus sebagai bentuk pemenuhan Tugas Akhir Proyek mata kuliah Mobile Computing, Universitas Cakrawala (Kelompok 5). Segala bentuk fitur telah disesuaikan dengan *Product Requirements Document* (PRD).
 
 ---
 *Dibuat dengan ❤️ oleh Kelompok 5*

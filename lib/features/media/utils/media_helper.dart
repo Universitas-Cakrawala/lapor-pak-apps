@@ -1,12 +1,10 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import '../../../core/config/api_config.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MediaHelper {
-  // Base URL fallback if running locally
-  static const String _defaultBaseUrl = 'http://10.0.2.2:3000/api';
-  
   // NFR: 2MB limit (in bytes)
   static const int _maxImageBytes = 2 * 1024 * 1024;
   
@@ -14,7 +12,7 @@ class MediaHelper {
   static const int maxVideoBytes = 10 * 1024 * 1024;
 
   static String displayUrl(String key) {
-    return '$_defaultBaseUrl/media/$key';
+    return '${ApiConfig.baseUrl}/media/$key';
   }
 
   /// Compress image iteratively to be under 2MB

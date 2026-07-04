@@ -4,6 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../data/auth_repository.dart';
 import '../../../users/data/users_repository.dart';
 import 'auth_state.dart';
+import '../../../../core/network/fcm_service.dart';
+import '../../../../core/router/app_router.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepo;
@@ -57,6 +59,11 @@ class AuthCubit extends Cubit<AuthState> {
       const storage = FlutterSecureStorage();
       await storage.write(key: 'jwt_token', value: loginData.accessToken);
       
+      // Setup FCM setelah login sukses
+      try {
+        await FcmService.setupPushNotifications(_usersRepo, appRouter);
+      } catch (_) {}
+
       emit(state.copyWith(
         status: AuthStatus.success,
         user: loginData.user,

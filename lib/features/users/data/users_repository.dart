@@ -14,4 +14,12 @@ class UsersRepository {
       return null;
     }
   }
+
+  Future<void> updateFcmToken(String fcmToken) async {
+    try {
+      await dio.patch('/users/me/fcm-token', data: {'fcmToken': fcmToken});
+    } catch (e) {
+      // Ignored if failed
+    }
+  }
 }

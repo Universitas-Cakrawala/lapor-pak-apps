@@ -108,4 +108,13 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(status: AuthStatus.failure));
     }
   }
+
+  Future<void> logout() async {
+    try {
+      await _usersRepo.updateFcmToken('');
+    } catch (_) {}
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: 'jwt_token');
+    emit(const AuthState(status: AuthStatus.initial));
+  }
 }

@@ -42,7 +42,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/profile', 
-      builder: (c, s) => BlocProvider(create: (_) => sl<ProfileCubit>(), child: const ProfileScreen()),
+      builder: (c, s) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => sl<ProfileCubit>()),
+          BlocProvider(create: (_) => sl<AuthCubit>()),
+        ],
+        child: const ProfileScreen(),
+      ),
     ),
     GoRoute(
       path: '/home', 

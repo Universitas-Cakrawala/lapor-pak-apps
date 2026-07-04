@@ -20,6 +20,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _phoneCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _rePasswordCtrl = TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureRePassword = true;
 
   @override
   void dispose() {
@@ -136,8 +138,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _passwordCtrl,
                           enabled: !isLoading,
-                          obscureText: true,
-                          decoration: const InputDecoration(labelText: 'Password'),
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
+                            ),
+                          ),
                           validator: (val) {
                             if (val == null || val.isEmpty) return 'Password wajib diisi';
                             if (val.length < 8) return 'Minimal 8 karakter';
@@ -148,8 +164,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         TextFormField(
                           controller: _rePasswordCtrl,
                           enabled: !isLoading,
-                          obscureText: true,
-                          decoration: const InputDecoration(labelText: 'Konfirmasi Password'),
+                          obscureText: _obscureRePassword,
+                          decoration: InputDecoration(
+                            labelText: 'Konfirmasi Password',
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureRePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureRePassword = !_obscureRePassword;
+                                });
+                              },
+                            ),
+                          ),
                           validator: (val) {
                             if (val == null || val.isEmpty) return 'Ulangi password';
                             if (val != _passwordCtrl.text) return 'Password tidak cocok';

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import '../../../core/network/dio_client.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class MediaRepository {
   final Dio dio;
@@ -13,7 +14,13 @@ class MediaRepository {
 
     final formData = FormData();
     for (final f in files) {
-      formData.files.add(MapEntry('files', await MultipartFile.fromFile(f.path)));
+      if (kIsWeb) {
+        final bytes = await f.readAsBytes();
+        final filename = f.path.split('/').last;
+        formData.files.add(MapEntry('files', MultipartFile.fromBytes(bytes, filename: filename)));
+      } else {
+        formData.files.add(MapEntry('files', await MultipartFile.fromFile(f.path)));
+      }
     }
     
     final res = await dio.post('/media/upload', data: formData);

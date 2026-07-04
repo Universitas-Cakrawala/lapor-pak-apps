@@ -46,14 +46,18 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.report_problem, size: 80, color: Colors.white),
+              Image.asset(
+                'assets/images/lapor_pak_logo_transparent.webp',
+                width: 120,
+                height: 120,
+              ),
               const SizedBox(height: 24),
               Text(
                 'Lapor Pak',
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 12),
               const CircularProgressIndicator(color: AppColors.amber),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "864085513377",
+    "project_id": "lapor-pak-db002",
+    "storage_bucket": "lapor-pak-db002.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:864085513377:android:4cdff410b4b973b2ba0ce0",
+        "android_client_info": {
+          "package_name": "com.laporpak.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA06trw2QyEsd3w1gWvxKVS3ri1-EHs-o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

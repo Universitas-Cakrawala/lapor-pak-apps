@@ -48,5 +48,8 @@ app.*.map.json
 # Secrets
 .env
 
+# Firebase configuration files
+android/app/google-services.json
+
 # etc
 .agents/

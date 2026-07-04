@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/dashboard_cubit.dart';
 import '../bloc/dashboard_state.dart';
 import '../../../../shared/models/dashboard_stats.dart';
 import '../../../../shared/models/weekly_report_item.dart';
-import '../../../../shared/models/map_report_point.dart';
-import '../../../../shared/models/status_history_model.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -26,17 +22,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     context.read<DashboardCubit>().load();
   }
 
-  Color _getStatusColor(ReportStatus status) {
-    switch (status) {
-      case ReportStatus.MENUNGGU:
-        return AppColors.amber;
-      case ReportStatus.DIPROSES:
-        return AppColors.civicBlue;
-      case ReportStatus.SELESAI:
-        return Colors.green;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +31,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () => context.push('/profile'),
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => context.read<DashboardCubit>().load(),
           ),
         ],
       ),
@@ -75,21 +56,37 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           }
 
           final stats = state.stats!;
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildStatsGrid(stats),
-                const SizedBox(height: 24),
-                const Text('Laporan Mingguan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                _buildWeeklyChart(state.weeklyData),
-                const SizedBox(height: 24),
-                const Text('Peta Laporan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                _buildMap(state.mapPoints),
-              ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<DashboardCubit>().load();
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildStatsGrid(stats),
+                  const SizedBox(height: 24),
+                  const Text('Laporan Mingguan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  _buildWeeklyChart(state.weeklyData),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      onPressed: () => context.push('/reports'),
+                      icon: const Icon(Icons.list_alt),
+                      label: const Text('Lihat Semua Daftar Laporan'),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                ],
+              ),
             ),
           );
         },
@@ -190,40 +187,6 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             borderData: FlBorderData(show: false),
             gridData: const FlGridData(show: false),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMap(List<MapReportPoint> mapReports) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      clipBehavior: Clip.antiAlias,
-      child: SizedBox(
-        height: 300,
-        child: FlutterMap(
-          options: const MapOptions(
-            initialCenter: LatLng(-6.2088, 106.8456), // Jakarta center
-            initialZoom: 11,
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.laporpak.app',
-            ),
-            MarkerLayer(
-              markers: mapReports.map<Marker>((r) => Marker(
-                point: LatLng(r.latitude, r.longitude),
-                width: 40,
-                height: 40,
-                child: GestureDetector(
-                  onTap: () => context.push('/reports/${r.id}'),
-                  child: Icon(Icons.location_pin, color: _getStatusColor(r.status), size: 36),
-                ),
-              )).toList(),
-            ),
-          ],
         ),
       ),
     );

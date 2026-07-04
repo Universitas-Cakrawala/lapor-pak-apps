@@ -13,11 +13,7 @@ class MediaHelper {
   // Video < 10MB
   static const int maxVideoBytes = 10 * 1024 * 1024;
 
-  /// Construct ready-to-use URL for Image.network
   static String displayUrl(String key) {
-    // We should ideally get baseUrl from ApiConfig. 
-    // Assuming it's standard local dev format for now.
-    // If ApiConfig exists and is accessible, we could use that.
     return '$_defaultBaseUrl/media/$key';
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/models/status_history_model.dart';
 import '../../../../shared/models/report_model.dart';
@@ -8,6 +10,7 @@ import '../bloc/report_detail_cubit.dart';
 import '../bloc/report_detail_state.dart';
 import '../../../media/utils/media_helper.dart';
 import '../widgets/status_timeline_widget.dart';
+import 'package:video_player/video_player.dart';
 
 class ReportDetailScreen extends StatefulWidget {
   final String id;
@@ -120,6 +123,38 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                             title: const Text('Lokasi Koordinat'),
                             subtitle: Text('${r.latitude}, ${r.longitude}'),
                           ),
+                          const SizedBox(height: 12),
+                          Container(
+                            height: 200,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: FlutterMap(
+                              options: MapOptions(
+                                initialCenter: LatLng(r.latitude, r.longitude),
+                                initialZoom: 16.0,
+                              ),
+                              children: [
+                                TileLayer(
+                                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName: 'com.laporpak.app',
+                                ),
+                                MarkerLayer(
+                                  markers: [
+                                    Marker(
+                                      point: LatLng(r.latitude, r.longitude),
+                                      width: 40,
+                                      height: 40,
+                                      child: const Icon(Icons.location_pin, color: Colors.red, size: 40),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                           if (r.photoUrls.isNotEmpty) ...[
                             const SizedBox(height: 16),
                             const Text('Foto Kejadian', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -130,18 +165,76 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                 scrollDirection: Axis.horizontal,
                                 itemCount: r.photoUrls.length,
                                 itemBuilder: (context, index) {
-                                  return Container(
-                                    width: 120,
-                                    margin: const EdgeInsets.only(right: 12),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                        image: NetworkImage(MediaHelper.displayUrl(r.photoUrls[index])),
-                                        fit: BoxFit.cover,
+                                  final imageUrl = MediaHelper.displayUrl(r.photoUrls[index]);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (c) => Dialog(
+                                          backgroundColor: Colors.transparent,
+                                          insetPadding: EdgeInsets.zero,
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              InteractiveViewer(child: Image.network(imageUrl)),
+                                              Positioned(
+                                                top: 40,
+                                                right: 20,
+                                                child: IconButton(
+                                                  icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                                                  onPressed: () => Navigator.pop(c),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 120,
+                                      margin: const EdgeInsets.only(right: 12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        image: DecorationImage(
+                                          image: NetworkImage(imageUrl),
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   );
                                 },
+                              ),
+                            ),
+                          ],
+                          if (r.videoUrl != null && r.videoUrl!.isNotEmpty) ...[
+                            const SizedBox(height: 16),
+                            const Text('Video Kejadian', style: TextStyle(fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 8),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (c) => FullScreenVideoDialog(videoUrl: MediaHelper.displayUrl(r.videoUrl!)),
+                                );
+                              },
+                              child: Container(
+                                height: 120,
+                                width: 120,
+                                alignment: Alignment.centerLeft,
+                                decoration: BoxDecoration(
+                                  color: Colors.black87,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.play_circle_outline, color: Colors.white, size: 40),
+                                      SizedBox(height: 8),
+                                      Text('Putar Video', style: TextStyle(color: Colors.white, fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -235,6 +328,80 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
       child: Text(
         status,
         style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+      ),
+    );
+  }
+}
+
+class FullScreenVideoDialog extends StatefulWidget {
+  final String videoUrl;
+  const FullScreenVideoDialog({super.key, required this.videoUrl});
+
+  @override
+  State<FullScreenVideoDialog> createState() => _FullScreenVideoDialogState();
+}
+
+class _FullScreenVideoDialogState extends State<FullScreenVideoDialog> {
+  late VideoPlayerController _controller;
+  bool _isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+      ..initialize().then((_) {
+        setState(() {});
+        _controller.play();
+      }).catchError((e) {
+        setState(() => _isError = true);
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.black,
+      insetPadding: EdgeInsets.zero,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (_isError)
+            const Center(child: Text('Gagal memuat video', style: TextStyle(color: Colors.white)))
+          else if (_controller.value.isInitialized)
+            AspectRatio(
+              aspectRatio: _controller.value.aspectRatio,
+              child: VideoPlayer(_controller),
+            )
+          else
+            const CircularProgressIndicator(color: Colors.white),
+          Positioned(
+            top: 40,
+            right: 20,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 32),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          if (_controller.value.isInitialized)
+            Positioned(
+              bottom: 40,
+              child: FloatingActionButton(
+                backgroundColor: Colors.white54,
+                onPressed: () {
+                  setState(() {
+                    _controller.value.isPlaying ? _controller.pause() : _controller.play();
+                  });
+                },
+                child: Icon(_controller.value.isPlaying ? Icons.pause : Icons.play_arrow, color: Colors.black),
+              ),
+            ),
+        ],
       ),
     );
   }

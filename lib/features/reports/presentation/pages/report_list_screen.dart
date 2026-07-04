@@ -6,7 +6,11 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/models/status_history_model.dart';
 import '../bloc/report_list_cubit.dart';
 import '../bloc/report_list_state.dart';
-import '../../../media/utils/media_helper.dart';
+
+
+import '../../../users/presentation/bloc/profile_cubit.dart';
+import '../../../users/presentation/bloc/profile_state.dart';
+import '../../../../shared/models/user_model.dart';
 
 class ReportListScreen extends StatefulWidget {
   const ReportListScreen({super.key});
@@ -47,7 +51,22 @@ class _ReportListScreenState extends State<ReportListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Laporan Saya'),
+        title: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            final isAdmin = state.user?.role == UserRole.ADMIN;
+            return Text(isAdmin ? 'Semua Laporan Warga' : 'Laporan Saya');
+          },
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/home');
+            }
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -156,20 +175,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(color: Colors.grey[800]),
                                 ),
-                                if (r.photoUrls.isNotEmpty) ...[
-                                  const SizedBox(height: 12),
-                                  Container(
-                                    height: 140,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                        image: NetworkImage(MediaHelper.displayUrl(r.photoUrls.first)),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+
                               ],
                             ),
                           ),

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../bloc/report_form_cubit.dart';
 import '../bloc/report_form_state.dart';
 import '../widgets/media_picker_widget.dart';
@@ -159,8 +160,8 @@ class _ReportFormStep2ScreenState extends State<ReportFormStep2Screen> {
                     width: double.infinity,
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.outline),
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: _isLoadingLocation

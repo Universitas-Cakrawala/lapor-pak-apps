@@ -128,8 +128,8 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                             height: 200,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: AppColors.outline),
                             ),
                             clipBehavior: Clip.antiAlias,
                             child: FlutterMap(
@@ -194,7 +194,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                       width: 120,
                                       margin: const EdgeInsets.only(right: 12),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(8),
                                         image: DecorationImage(
                                           image: NetworkImage(imageUrl),
                                           fit: BoxFit.cover,
@@ -223,7 +223,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                 alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
                                   color: Colors.black87,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Center(
                                   child: Column(
@@ -304,30 +304,34 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
 
 
   Widget _buildStatusBadge(String status) {
-    Color color;
+    Color bgColor;
+    Color fgColor;
     switch (status) {
       case 'MENUNGGU':
-        color = AppColors.statusMenungguFg;
+        bgColor = AppColors.statusMenungguBg;
+        fgColor = AppColors.statusMenungguFg;
         break;
       case 'DIPROSES':
-        color = AppColors.statusDiprosesFg;
+        bgColor = AppColors.statusDiprosesBg;
+        fgColor = AppColors.statusDiprosesFg;
         break;
       case 'SELESAI':
-        color = AppColors.statusSelesaiFg;
+        bgColor = AppColors.statusSelesaiBg;
+        fgColor = AppColors.statusSelesaiFg;
         break;
       default:
-        color = Colors.grey;
+        bgColor = Colors.grey.shade300;
+        fgColor = Colors.black87;
     }
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(9999),
       ),
       child: Text(
         status,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: fgColor),
       ),
     );
   }

@@ -103,7 +103,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       shrinkWrap: true,
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
-      childAspectRatio: 1.5,
+      childAspectRatio: 1.3,
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildStatCard('Total Laporan', stats.totalLaporan.toString(), Icons.assignment, Colors.blueGrey),
@@ -119,7 +119,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

@@ -4,6 +4,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../bloc/profile_cubit.dart';
 import '../bloc/profile_state.dart';
+import 'package:go_router/go_router.dart';
+import '../../../auth/presentation/bloc/auth_cubit.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -145,9 +147,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      // Logic logout akan memanggil AuthCubit.logout() lalu goRouter ke login.
-                      // Di-handle manual / biarkan null dulu
+                    onPressed: () async {
+                      await context.read<AuthCubit>().logout();
+                      if (context.mounted) {
+                        context.go('/login');
+                      }
                     },
                     icon: const Icon(Icons.logout, color: Colors.red),
                     label: const Text('Keluar', style: TextStyle(color: Colors.red)),

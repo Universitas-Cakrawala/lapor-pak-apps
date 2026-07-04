@@ -100,8 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               prefixIcon: Icon(Icons.person_outline),
                             ),
                             validator: (val) {
-                              if (val == null || val.trim().isEmpty)
+                              if (val == null || val.trim().isEmpty) {
                                 return 'Username wajib diisi';
+                              }
                               return null;
                             },
                           ),
@@ -127,8 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             validator: (val) {
-                              if (val == null || val.isEmpty)
+                              if (val == null || val.isEmpty) {
                                 return 'Password wajib diisi';
+                              }
                               return null;
                             },
                           ),

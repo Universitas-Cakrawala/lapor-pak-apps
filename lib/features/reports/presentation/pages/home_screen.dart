@@ -198,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
       shrinkWrap: true,
       crossAxisSpacing: 16,
       mainAxisSpacing: 16,
-      childAspectRatio: 1.5,
+      childAspectRatio: 1.3,
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildStatCard('Total', total.toString(), Icons.assignment, Colors.blueGrey),
@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

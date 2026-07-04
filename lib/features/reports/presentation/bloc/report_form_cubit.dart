@@ -70,12 +70,16 @@ class ReportFormCubit extends Cubit<ReportFormState> {
     required String id,
     required String roadName,
     required String description,
+    required double latitude,
+    required double longitude,
   }) async {
     emit(state.copyWith(status: ReportFormStatus.loading, errorMessage: null));
     try {
       final report = await _repo.update(id, {
         'roadName': roadName,
         'description': description,
+        'latitude': latitude,
+        'longitude': longitude,
       });
 
       emit(state.copyWith(

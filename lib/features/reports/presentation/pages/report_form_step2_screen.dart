@@ -9,8 +9,11 @@ import '../bloc/report_form_cubit.dart';
 import '../bloc/report_form_state.dart';
 import '../widgets/media_picker_widget.dart';
 
+import '../../../../shared/models/report_model.dart';
+
 class ReportFormStep2Screen extends StatefulWidget {
-  const ReportFormStep2Screen({super.key});
+  final ReportModel? existingReport;
+  const ReportFormStep2Screen({super.key, this.existingReport});
 
   @override
   State<ReportFormStep2Screen> createState() => _ReportFormStep2ScreenState();
@@ -31,7 +34,14 @@ class _ReportFormStep2ScreenState extends State<ReportFormStep2Screen> {
   @override
   void initState() {
     super.initState();
-    _getLocation();
+    if (widget.existingReport != null) {
+      _roadNameCtrl.text = widget.existingReport!.roadName;
+      _descCtrl.text = widget.existingReport!.description;
+      _currentLocation = LatLng(widget.existingReport!.latitude, widget.existingReport!.longitude);
+      // Skip fetching new location since we have existing one
+    } else {
+      _getLocation();
+    }
   }
 
   Future<void> _getLocation() async {
@@ -73,26 +83,37 @@ class _ReportFormStep2ScreenState extends State<ReportFormStep2Screen> {
       return;
     }
 
-    if (_photos.isEmpty) {
+    if (widget.existingReport == null && _photos.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Minimal pilih 1 foto!')));
       return;
     }
 
-    context.read<ReportFormCubit>().submitReport(
-      roadName: _roadNameCtrl.text,
-      description: _descCtrl.text,
-      latitude: _currentLocation!.latitude,
-      longitude: _currentLocation!.longitude,
-      photos: _photos,
-      video: _video,
-    );
+    if (widget.existingReport != null) {
+      context.read<ReportFormCubit>().updateReport(
+        id: widget.existingReport!.id,
+        roadName: _roadNameCtrl.text,
+        description: _descCtrl.text,
+        latitude: _currentLocation!.latitude,
+        longitude: _currentLocation!.longitude,
+      );
+    } else {
+      context.read<ReportFormCubit>().submitReport(
+        roadName: _roadNameCtrl.text,
+        description: _descCtrl.text,
+        latitude: _currentLocation!.latitude,
+        longitude: _currentLocation!.longitude,
+        photos: _photos,
+        video: _video,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEdit = widget.existingReport != null;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buat Laporan (2/2)'),
+        title: Text(isEdit ? 'Edit Laporan' : 'Buat Laporan (2/2)'),
       ),
       body: BlocConsumer<ReportFormCubit, ReportFormState>(
         listener: (context, state) {
@@ -153,6 +174,7 @@ class _ReportFormStep2ScreenState extends State<ReportFormStep2Screen> {
                                 children: [
                                   TileLayer(
                                     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    userAgentPackageName: 'com.laporpak.app',
                                   ),
                                   MarkerLayer(
                                     markers: [
@@ -172,15 +194,39 @@ class _ReportFormStep2ScreenState extends State<ReportFormStep2Screen> {
                               ),
                   ),
                   const SizedBox(height: 24),
-                  MediaPickerWidget(
-                    onMediaChanged: (photos, video) {
-                      setState(() {
-                        _photos = photos;
-                        _video = video;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 40),
+                  if (!isEdit) ...[
+                    MediaPickerWidget(
+                      onMediaChanged: (photos, video) {
+                        setState(() {
+                          _photos = photos;
+                          _video = video;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 40),
+                  ] else ...[
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[50],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.blue[200]!),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.blue),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Media tidak dapat diubah pada mode edit.',
+                              style: TextStyle(color: Colors.blue, fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                   SizedBox(
                     width: double.infinity,
                     height: 50,

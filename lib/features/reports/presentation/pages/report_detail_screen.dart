@@ -189,7 +189,9 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: Route to edit screen
+                              if (state.report != null) {
+                                context.push('/reports/${state.report!.id}/edit', extra: state.report);
+                              }
                             },
                             child: const Text('Edit Laporan'),
                           ),

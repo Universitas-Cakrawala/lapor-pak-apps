@@ -1,6 +1,7 @@
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../shared/models/report_model.dart';
 
 import '../di/service_locator.dart';
 import '../../features/auth/presentation/bloc/auth_cubit.dart';
@@ -73,6 +74,13 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/reports/:id', 
       builder: (c, s) => BlocProvider(create: (_) => sl<ReportDetailCubit>(), child: ReportDetailScreen(id: s.pathParameters['id']!)),
+    ),
+    GoRoute(
+      path: '/reports/:id/edit', 
+      builder: (c, s) => BlocProvider(
+        create: (_) => sl<ReportFormCubit>(), 
+        child: ReportFormStep2Screen(existingReport: s.extra as ReportModel?),
+      ),
     ),
     GoRoute(
       path: '/admin/dashboard', 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../auth/presentation/bloc/auth_cubit.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../users/presentation/bloc/profile_cubit.dart';
+import '../../../users/presentation/bloc/profile_state.dart';
 
 class ReportFormStep1Screen extends StatelessWidget {
   const ReportFormStep1Screen({super.key});
@@ -14,8 +14,12 @@ class ReportFormStep1Screen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Buat Laporan (1/2)'),
       ),
-      body: BlocBuilder<AuthCubit, AuthState>(
+      body: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, state) {
+          if (state.status == ProfileStatus.loading || state.status == ProfileStatus.initial) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
           final user = state.user;
           if (user == null) return const Center(child: Text('Data pengguna tidak ditemukan'));
 

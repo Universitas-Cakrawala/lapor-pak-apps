@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../config/api_config.dart';
+import '../router/app_router.dart';
 
 class DioClient {
   final _storage = const FlutterSecureStorage();
@@ -20,7 +21,13 @@ class DioClient {
         }
         handler.next(options);
       },
-      onError: (DioException e, handler) {
+      onError: (DioException e, handler) async {
+        if (e.response?.statusCode == 401) {
+          await _storage.delete(key: 'jwt_token');
+          appRouter.go('/login');
+          return handler.next(e.copyWith(message: 'Sesi berakhir, silakan login kembali.'));
+        }
+
         final data = e.response?.data;
         String msg = 'Terjadi kesalahan. Coba lagi.';
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../media/utils/media_helper.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class MediaPickerWidget extends StatefulWidget {
   final Function(List<File> photos, File? video) onMediaChanged;
@@ -46,7 +47,8 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
       if (pickedFile != null) {
         final file = File(pickedFile.path);
         // Validasi ukuran video di klien (< 10MB)
-        if (file.lengthSync() > MediaHelper.maxVideoBytes) {
+        final int fileLength = kIsWeb ? (await file.readAsBytes()).length : file.lengthSync();
+        if (fileLength > MediaHelper.maxVideoBytes) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Ukuran video tidak boleh lebih dari 10MB!'), backgroundColor: Colors.red),
@@ -196,7 +198,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
               image: isVideo
                   ? null
                   : DecorationImage(
-                      image: FileImage(file),
+                      image: kIsWeb ? NetworkImage(file.path) as ImageProvider : FileImage(file),
                       fit: BoxFit.cover,
                     ),
             ),

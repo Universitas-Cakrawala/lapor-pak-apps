@@ -23,6 +23,8 @@ class MediaHelper {
 
   /// Compress image iteratively to be under 2MB
   static Future<File> compressImage(File file) async {
+    if (kIsWeb) return file; // Skip compression on Web to avoid dart:io File exceptions
+
     int length = file.lengthSync();
     if (length <= _maxImageBytes) return file;
 

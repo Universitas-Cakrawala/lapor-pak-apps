@@ -50,7 +50,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/reports/new/step1', 
-      builder: (c, s) => const ReportFormStep1Screen(), // AuthCubit already global if needed, wait, AuthCubit is not global.
+      builder: (c, s) => BlocProvider(create: (_) => sl<ProfileCubit>()..fetchProfile(), child: const ReportFormStep1Screen()),
     ),
     GoRoute(
       path: '/reports/new/step2', 

@@ -48,8 +48,14 @@ Aplikasi ini mengadopsi standar industri modern untuk pengembangan Flutter:
    ```bash
    flutter pub get
    ```
-4. Sesuaikan variabel *environment* dan Base URL API Anda di dalam file `.env` (salin dari `.env.example`).
-   > **Catatan:** Base URL *default* untuk mengakses *localhost* di Android Emulator adalah `http://10.0.2.2:3000/api`.
+4. Buat file `.env` di root folder proyek (Anda bisa menyalin dari `.env.example` jika tersedia) dan sesuaikan Base URL API Anda:
+   ```bash
+   cp .env.example .env
+   ```
+   Sesuaikan nilai `API_URL` di dalam file `.env` tersebut berdasarkan perangkat yang Anda gunakan untuk proses *running/testing*:
+   - **Android Emulator:** `API_URL=http://10.0.2.2:3000/api`
+   - **Perangkat Fisik / Real Device (via WiFi):** `API_URL=http://<IP_KOMPUTER_ANDA>:3000/api` (contoh: `http://192.168.1.10:3000/api`)
+   - **Perangkat Fisik / Real Device (via kabel USB + adb reverse):** `API_URL=http://127.0.0.1:3000/api`
 5. Jalankan aplikasi di emulator atau perangkat nyata Anda:
    ```bash
    flutter run

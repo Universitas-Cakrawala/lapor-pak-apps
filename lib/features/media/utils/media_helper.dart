@@ -8,8 +8,8 @@ class MediaHelper {
   // NFR: 2MB limit (in bytes)
   static const int _maxImageBytes = 2 * 1024 * 1024;
   
-  // Video < 10MB
-  static const int maxVideoBytes = 10 * 1024 * 1024;
+  // Video < 50MB
+  static const int maxVideoBytes = 50 * 1024 * 1024;
 
   static String displayUrl(String key) {
     return '${ApiConfig.baseUrl}/media/$key';

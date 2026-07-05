@@ -66,12 +66,12 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
           finalFile = await File(pickedFile.path).copy(safeFile.path);
         }
         
-        // Validasi ukuran video di klien (< 10MB)
+        // Validasi ukuran video di klien (< 50MB)
         final int fileLength = kIsWeb ? (await finalFile.readAsBytes()).length : finalFile.lengthSync();
         if (fileLength > MediaHelper.maxVideoBytes) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Ukuran video tidak boleh lebih dari 10MB!'), backgroundColor: Colors.red),
+              const SnackBar(content: Text('Ukuran video tidak boleh lebih dari 50MB!'), backgroundColor: Colors.red),
             );
           }
           return;
@@ -193,7 +193,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
                 children: [
                   Icon(Icons.video_call, color: AppColors.civicBlue),
                   SizedBox(width: 8),
-                  Text('Pilih Video (Maks 10MB)', style: TextStyle(color: Colors.grey)),
+                  Text('Pilih Video (Maks 50MB)', style: TextStyle(color: Colors.grey)),
                 ],
               ),
             ),

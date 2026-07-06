@@ -5,7 +5,6 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../media/utils/media_helper.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:video_player/video_player.dart';
-import 'package:path_provider/path_provider.dart';
 
 class MediaPickerWidget extends StatefulWidget {
   final Function(List<XFile> photos, XFile? video) onMediaChanged;

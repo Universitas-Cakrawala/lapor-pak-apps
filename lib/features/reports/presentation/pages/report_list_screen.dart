@@ -130,6 +130,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
                   ),
                   child: ListView.builder(
                     controller: _scrollCtrl,
+                    physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemCount: state.reports.length + (state.hasMore ? 1 : 0),
                     itemBuilder: (context, i) {

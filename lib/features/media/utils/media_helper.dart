@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../core/config/api_config.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,16 +16,16 @@ class MediaHelper {
   }
 
   /// Compress image iteratively to be under 2MB
-  static Future<File> compressImage(File file) async {
+  static Future<XFile> compressImage(XFile file) async {
     if (kIsWeb) return file; // Skip compression on Web to avoid dart:io File exceptions
 
-    int length = file.lengthSync();
+    int length = await file.length();
     if (length <= _maxImageBytes) return file;
 
     debugPrint('Original image size: ${length / 1024 / 1024} MB');
     
     int quality = 80;
-    File? resultFile;
+    XFile? resultFile;
     
     // Create temporary path
     final dir = await getTemporaryDirectory();
@@ -43,11 +43,11 @@ class MediaHelper {
       );
 
       if (xFile != null) {
-        resultFile = File(xFile.path);
-        final compressedLength = resultFile.lengthSync();
-        debugPrint('Compressed size at Q=$quality: ${compressedLength / 1024 / 1024} MB');
+        final newLen = await xFile.length();
+        resultFile = xFile;
+        debugPrint('Compressed size at Q=$quality: ${newLen / 1024 / 1024} MB');
         
-        if (compressedLength <= _maxImageBytes) {
+        if (newLen <= _maxImageBytes) {
           break; // Satisfies requirement
         }
       }

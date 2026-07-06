@@ -1,4 +1,4 @@
-
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/models/report_model.dart';
@@ -26,7 +26,11 @@ import '../../features/reports/presentation/bloc/admin_update_status_cubit.dart'
 import '../../features/reports/presentation/pages/admin_dashboard_screen.dart';
 import '../../features/reports/presentation/bloc/dashboard_cubit.dart';
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
 final GoRouter appRouter = GoRouter(
+  navigatorKey: rootNavigatorKey,
   initialLocation: '/splash',
   routes: [
     GoRoute(

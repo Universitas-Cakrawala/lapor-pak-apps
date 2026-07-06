@@ -8,7 +8,7 @@ import 'package:video_player/video_player.dart';
 import 'package:path_provider/path_provider.dart';
 
 class MediaPickerWidget extends StatefulWidget {
-  final Function(List<File> photos, File? video) onMediaChanged;
+  final Function(List<XFile> photos, XFile? video) onMediaChanged;
   
   const MediaPickerWidget({super.key, required this.onMediaChanged});
 
@@ -18,8 +18,8 @@ class MediaPickerWidget extends StatefulWidget {
 
 class _MediaPickerWidgetState extends State<MediaPickerWidget> {
   final ImagePicker _picker = ImagePicker();
-  final List<File> _photos = [];
-  File? _video;
+  final List<XFile> _photos = [];
+  XFile? _video;
 
   Future<void> _pickPhoto(ImageSource source) async {
     if (_photos.length >= 5) {
@@ -29,17 +29,8 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
     try {
       final pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
-        File finalFile;
-        if (kIsWeb) {
-          finalFile = File(pickedFile.path);
-        } else {
-          final tempDir = await getTemporaryDirectory();
-          final uniqueName = '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
-          final safeFile = File('${tempDir.path}/$uniqueName');
-          finalFile = await File(pickedFile.path).copy(safeFile.path);
-        }
         setState(() {
-          _photos.add(finalFile);
+          _photos.add(pickedFile);
         });
         widget.onMediaChanged(_photos, _video);
       }
@@ -56,18 +47,8 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
     try {
       final pickedFile = await _picker.pickVideo(source: source);
       if (pickedFile != null) {
-        File finalFile;
-        if (kIsWeb) {
-          finalFile = File(pickedFile.path);
-        } else {
-          final tempDir = await getTemporaryDirectory();
-          final uniqueName = '${DateTime.now().millisecondsSinceEpoch}_${pickedFile.name}';
-          final safeFile = File('${tempDir.path}/$uniqueName');
-          finalFile = await File(pickedFile.path).copy(safeFile.path);
-        }
-        
         // Validasi ukuran video di klien (< 50MB)
-        final int fileLength = kIsWeb ? (await finalFile.readAsBytes()).length : finalFile.lengthSync();
+        final int fileLength = await pickedFile.length();
         if (fileLength > MediaHelper.maxVideoBytes) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -77,7 +58,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
           return;
         }
         setState(() {
-          _video = finalFile;
+          _video = pickedFile;
         });
         widget.onMediaChanged(_photos, _video);
       }
@@ -202,7 +183,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
     );
   }
 
-  Widget _buildThumbnail(File file, bool isVideo, int index) {
+  Widget _buildThumbnail(XFile file, bool isVideo, int index) {
     return Container(
       width: isVideo ? 120 : 80,
       height: 80,
@@ -218,7 +199,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
               image: isVideo
                   ? null
                   : DecorationImage(
-                      image: kIsWeb ? NetworkImage(file.path) as ImageProvider : FileImage(file),
+                      image: kIsWeb ? NetworkImage(file.path) as ImageProvider : FileImage(File(file.path)),
                       fit: BoxFit.cover,
                     ),
             ),
@@ -243,7 +224,7 @@ class _MediaPickerWidgetState extends State<MediaPickerWidget> {
 }
 
 class VideoThumbnailWidget extends StatefulWidget {
-  final File file;
+  final XFile file;
   const VideoThumbnailWidget({super.key, required this.file});
 
   @override
@@ -259,7 +240,7 @@ class _VideoThumbnailWidgetState extends State<VideoThumbnailWidget> {
     super.initState();
     _controller = kIsWeb
         ? VideoPlayerController.networkUrl(Uri.parse(widget.file.path))
-        : VideoPlayerController.file(widget.file);
+        : VideoPlayerController.file(File(widget.file.path));
         
     _controller.initialize().then((_) {
       if (mounted) {

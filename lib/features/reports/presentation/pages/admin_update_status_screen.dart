@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -23,7 +24,7 @@ class _AdminUpdateStatusScreenState extends State<AdminUpdateStatusScreen> {
   // Reuse MediaPickerWidget tapi kita cuma butuh 1 foto
   // Karena MediaPickerWidget di-design multi-foto (List<File>),
   // kita ambil yang index 0 sebagai proofPhoto.
-  File? _proofPhoto;
+  XFile? _proofPhoto;
 
   @override
   void dispose() {

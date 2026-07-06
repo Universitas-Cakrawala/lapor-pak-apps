@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/reports_repository.dart';
@@ -17,13 +18,13 @@ class ReportFormCubit extends Cubit<ReportFormState> {
     required String description,
     required double latitude,
     required double longitude,
-    required List<File> photos,
-    File? video,
+    required List<XFile> photos,
+    XFile? video,
   }) async {
     emit(state.copyWith(status: ReportFormStatus.loading, errorMessage: null));
     try {
       // 1. Kompresi gambar (<= 2MB)
-      final List<File> compressedPhotos = [];
+      final List<XFile> compressedPhotos = [];
       for (final photo in photos) {
         compressedPhotos.add(await MediaHelper.compressImage(photo));
       }

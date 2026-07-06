@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/status_repository.dart';
@@ -18,7 +19,7 @@ class AdminUpdateStatusCubit extends Cubit<AdminUpdateStatusState> {
     required String reportId,
     required ReportStatus status,
     String? note,
-    File? proofPhoto,
+    XFile? proofPhoto,
   }) async {
     emit(state.copyWith(status: AdminUpdateStatus.loading, errorMessage: null));
 

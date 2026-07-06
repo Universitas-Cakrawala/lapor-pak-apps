@@ -97,6 +97,11 @@ class AuthCubit extends Cubit<AuthState> {
         await storage.delete(key: 'jwt_token');
         emit(state.copyWith(status: AuthStatus.failure));
       } else {
+        // Setup FCM saat session direstore (app restart)
+        try {
+          await FcmService.setupPushNotifications(_usersRepo, appRouter);
+        } catch (_) {}
+
         emit(state.copyWith(
           status: AuthStatus.success,
           user: user,

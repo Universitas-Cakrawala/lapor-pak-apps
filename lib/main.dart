@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/di/service_locator.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,12 +34,21 @@ class LaporPakApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Lapor Pak!',
-      debugShowCheckedModeBanner: false,
-      theme: buildAppTheme(),
-      scaffoldMessengerKey: scaffoldMessengerKey,
-      routerConfig: appRouter,
+    return BlocProvider(
+      create: (_) => ThemeCubit(),
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) {
+          return MaterialApp.router(
+            title: 'Lapor Pak!',
+            debugShowCheckedModeBanner: false,
+            theme: buildAppTheme(),
+            darkTheme: buildDarkAppTheme(),
+            themeMode: themeMode,
+            scaffoldMessengerKey: scaffoldMessengerKey,
+            routerConfig: appRouter,
+          );
+        },
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/theme_cubit.dart';
 import '../bloc/profile_cubit.dart';
 import '../bloc/profile_state.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profil Saya'),
+        automaticallyImplyLeading: false,
       ),
       body: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
@@ -108,7 +110,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   user.email,
                   style: const TextStyle(color: Colors.grey),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
+
+                // Dark Mode Toggle
+                Card(
+                  child: BlocBuilder<ThemeCubit, ThemeMode>(
+                    builder: (context, themeMode) {
+                      final themeCubit = context.read<ThemeCubit>();
+                      final isDark = themeCubit.isDark(context);
+                      return ListTile(
+                        leading: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          transitionBuilder: (child, animation) => RotationTransition(
+                            turns: animation,
+                            child: child,
+                          ),
+                          child: Icon(
+                            isDark ? Icons.dark_mode : Icons.light_mode,
+                            key: ValueKey(isDark),
+                            color: isDark ? AppColors.amber : AppColors.civicBlue,
+                          ),
+                        ),
+                        title: const Text('Mode Gelap'),
+                        subtitle: Text(isDark ? 'Aktif' : 'Nonaktif'),
+                        trailing: Switch(
+                          value: isDark,
+                          onChanged: (_) => themeCubit.toggleTheme(),
+                          activeTrackColor: AppColors.amber.withValues(alpha: 0.5),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 8),
+
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),

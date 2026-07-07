@@ -246,6 +246,20 @@ final GoRouter appRouter = GoRouter(
       ),
     ),
     GoRoute(
+      path: '/admin/reports', 
+      parentNavigatorKey: rootNavigatorKey,
+      pageBuilder: (c, s) => _buildSlideTransition(
+        state: s,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => sl<ReportListCubit>()),
+            BlocProvider(create: (_) => sl<ProfileCubit>()..fetchProfile()),
+          ],
+          child: const ReportListScreen(),
+        ),
+      ),
+    ),
+    GoRoute(
       path: '/admin/reports/:id/status', 
       parentNavigatorKey: rootNavigatorKey,
       pageBuilder: (c, s) => _buildSlideTransition(

@@ -86,7 +86,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton.icon(
-                      onPressed: () => context.push('/reports'),
+                      onPressed: () => context.push('/admin/reports'),
                       icon: const Icon(Icons.list_alt),
                       label: const Text('Lihat Semua Daftar Laporan'),
                       style: ElevatedButton.styleFrom(

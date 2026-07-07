@@ -58,7 +58,6 @@ class _ReportListScreenState extends State<ReportListScreen> {
             return Text(isAdmin ? 'Semua Laporan Warga' : 'Laporan Saya');
           },
         ),
-        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [

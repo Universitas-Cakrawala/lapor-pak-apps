@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/shimmer_widgets.dart';
 import '../bloc/dashboard_cubit.dart';
 import '../bloc/dashboard_state.dart';
 import '../../../../shared/models/dashboard_stats.dart';
@@ -27,17 +28,26 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard Admin'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () => context.push('/profile'),
-          ),
-        ],
+        automaticallyImplyLeading: false,
       ),
       body: BlocBuilder<DashboardCubit, DashboardScreenState>(
         builder: (context, state) {
           if (state.status == DashboardStatus.initial || state.status == DashboardStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const ShimmerStatsGrid(),
+                  const SizedBox(height: 24),
+                  const ShimmerBox(width: 160, height: 20),
+                  const SizedBox(height: 16),
+                  const ShimmerChartPlaceholder(),
+                  const SizedBox(height: 24),
+                  ShimmerBox(width: double.infinity, height: 50, borderRadius: 12),
+                ],
+              ),
+            );
           }
           if (state.status == DashboardStatus.failure) {
             return Center(

@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/models/status_history_model.dart';
 import '../../../../shared/models/report_model.dart';
+import '../../../../shared/widgets/shimmer_widgets.dart';
 import '../bloc/report_detail_cubit.dart';
 import '../bloc/report_detail_state.dart';
 import '../../../media/utils/media_helper.dart';
@@ -70,7 +71,7 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
         },
         builder: (context, state) {
           if (state.status == ReportDetailStatus.loading || state.status == ReportDetailStatus.initial) {
-            return const Center(child: CircularProgressIndicator());
+            return const ShimmerDetailScreen();
           }
           if (state.status == ReportDetailStatus.failure && state.report == null) {
             return Center(child: Text(state.errorMessage ?? 'Gagal memuat detail'));
@@ -176,7 +177,12 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                           child: Stack(
                                             alignment: Alignment.center,
                                             children: [
-                                              InteractiveViewer(child: Image.network(imageUrl)),
+                                              InteractiveViewer(
+                                                child: Hero(
+                                                  tag: 'report_photo_${r.id}_$index',
+                                                  child: Image.network(imageUrl),
+                                                ),
+                                              ),
                                               Positioned(
                                                 top: 40,
                                                 right: 20,
@@ -190,14 +196,17 @@ class _ReportDetailScreenState extends State<ReportDetailScreen> {
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      width: 120,
-                                      margin: const EdgeInsets.only(right: 12),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        image: DecorationImage(
-                                          image: NetworkImage(imageUrl),
-                                          fit: BoxFit.cover,
+                                    child: Hero(
+                                      tag: index == 0 ? 'report_photo_${r.id}' : 'report_photo_${r.id}_$index',
+                                      child: Container(
+                                        width: 120,
+                                        margin: const EdgeInsets.only(right: 12),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          image: DecorationImage(
+                                            image: NetworkImage(imageUrl),
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -396,6 +405,7 @@ class _FullScreenVideoDialogState extends State<FullScreenVideoDialog> {
             Positioned(
               bottom: 40,
               child: FloatingActionButton(
+                heroTag: 'video_play_btn',
                 backgroundColor: Colors.white54,
                 onPressed: () {
                   setState(() {

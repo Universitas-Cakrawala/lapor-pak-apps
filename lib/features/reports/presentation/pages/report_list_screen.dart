@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/models/status_history_model.dart';
+import '../../../../shared/widgets/shimmer_widgets.dart';
 import '../bloc/report_list_cubit.dart';
 import '../bloc/report_list_state.dart';
 
@@ -57,16 +58,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
             return Text(isAdmin ? 'Semua Laporan Warga' : 'Laporan Saya');
           },
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
@@ -110,7 +102,7 @@ class _ReportListScreenState extends State<ReportListScreen> {
             child: BlocBuilder<ReportListCubit, ReportListState>(
               builder: (context, state) {
                 if (state.status == ReportListStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const ShimmerReportListItems();
                 }
                 
                 if (state.status == ReportListStatus.failure && state.reports.isEmpty) {

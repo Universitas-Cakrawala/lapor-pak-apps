@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../media/utils/media_helper.dart';
+import '../../../../shared/widgets/shimmer_widgets.dart';
 import '../bloc/home_stats_cubit.dart';
 import '../bloc/home_stats_state.dart';
 
@@ -26,17 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Beranda'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () => context.push('/profile'),
-          )
-        ],
+        automaticallyImplyLeading: false,
       ),
       body: BlocBuilder<HomeStatsCubit, HomeStatsState>(
         builder: (context, state) {
           if (state.isLoading && state.stats == null) {
-            return const Center(child: CircularProgressIndicator());
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildGreeting(),
+                  const SizedBox(height: 24),
+                  const ShimmerStatsGrid(),
+                  const SizedBox(height: 32),
+                  const ShimmerReportList(itemCount: 3),
+                ],
+              ),
+            );
           }
 
           if (state.error != null && state.stats == null) {
@@ -100,23 +108,26 @@ class _HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.all(16.0),
                               child: Row(
                                 children: [
-                                  // Placeholder untuk gambar (glassmorphism/soft shadow)
-                                  Container(
-                                    width: 80,
-                                    height: 80,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(8),
-                                      image: r.photoUrls.isNotEmpty
-                                          ? DecorationImage(
-                                              image: NetworkImage(MediaHelper.displayUrl(r.photoUrls.first)),
-                                              fit: BoxFit.cover,
-                                            )
+                                  // Photo thumbnail with Hero animation
+                                  Hero(
+                                    tag: 'report_photo_${r.id}',
+                                    child: Container(
+                                      width: 80,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: r.photoUrls.isNotEmpty
+                                            ? DecorationImage(
+                                                image: NetworkImage(MediaHelper.displayUrl(r.photoUrls.first)),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                      ),
+                                      child: r.photoUrls.isEmpty
+                                          ? const Icon(Icons.broken_image, color: Colors.grey)
                                           : null,
                                     ),
-                                    child: r.photoUrls.isEmpty
-                                        ? const Icon(Icons.broken_image, color: Colors.grey)
-                                        : null,
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
@@ -160,12 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push('/reports/new/step1'),
-        icon: const Icon(Icons.add),
-        label: const Text('Buat Laporan'),
-        backgroundColor: AppColors.amber,
       ),
     );
   }

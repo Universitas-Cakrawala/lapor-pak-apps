@@ -196,6 +196,17 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             ),
             borderData: FlBorderData(show: false),
             gridData: const FlGridData(show: false),
+            barTouchData: BarTouchData(
+              touchTooltipData: BarTouchTooltipData(
+                getTooltipColor: (_) => Colors.white,
+                getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  return BarTooltipItem(
+                    rod.toY.toInt().toString(),
+                    const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),

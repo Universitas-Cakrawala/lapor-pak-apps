@@ -125,7 +125,7 @@ class FcmService {
           );
 
           overlay.insert(entry);
-          Future.delayed(const Duration(seconds: 5), () {
+          Future.delayed(const Duration(seconds: 10), () {
             if (entry.mounted) entry.remove();
           });
         });

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Cubit to manage the app's theme mode (light, dark, system).
 class ThemeCubit extends Cubit<ThemeMode> {
-  ThemeCubit() : super(ThemeMode.system);
+  ThemeCubit() : super(ThemeMode.light);
 
   /// Toggle between light and dark modes.
   void toggleTheme() {

@@ -11,6 +11,9 @@ class DioClient {
     dio = Dio(BaseOptions(
       baseUrl: ApiConfig.baseUrl,
       connectTimeout: const Duration(seconds: 10),
+      headers: {
+        'ngrok-skip-browser-warning': 'true',
+      },
     ));
 
     dio.interceptors.add(InterceptorsWrapper(

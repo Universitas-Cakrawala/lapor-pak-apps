@@ -14,6 +14,8 @@ import '../../features/reports/presentation/bloc/admin_update_status_cubit.dart'
 import '../../features/reports/data/status_repository.dart';
 import '../../features/reports/data/dashboard_repository.dart';
 import '../../features/reports/presentation/bloc/dashboard_cubit.dart';
+import '../../features/notifications/data/notification_repository.dart';
+import '../../features/notifications/presentation/bloc/notification_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -28,6 +30,7 @@ void setupServiceLocator() {
   sl.registerLazySingleton<MediaRepository>(() => MediaRepository(sl<DioClient>().dio));
   sl.registerLazySingleton<StatusRepository>(() => StatusRepository(sl<DioClient>().dio));
   sl.registerLazySingleton<DashboardRepository>(() => DashboardRepository(sl<DioClient>().dio));
+  sl.registerLazySingleton<NotificationRepository>(() => NotificationRepository(sl<DioClient>().dio));
   
   // Cubits
   sl.registerFactory<AuthCubit>(() => AuthCubit(sl<AuthRepository>(), sl<UsersRepository>()));
@@ -38,4 +41,5 @@ void setupServiceLocator() {
   sl.registerFactory<ReportFormCubit>(() => ReportFormCubit(sl<ReportsRepository>(), sl<MediaRepository>()));
   sl.registerFactory<AdminUpdateStatusCubit>(() => AdminUpdateStatusCubit(sl<StatusRepository>(), sl<MediaRepository>()));
   sl.registerFactory<DashboardCubit>(() => DashboardCubit(sl<DashboardRepository>()));
+  sl.registerFactory<NotificationCubit>(() => NotificationCubit(sl<NotificationRepository>()));
 }

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../media/utils/media_helper.dart';
 import '../../../../shared/widgets/shimmer_widgets.dart';
+import '../../../notifications/presentation/bloc/notification_cubit.dart';
+import '../../../notifications/presentation/bloc/notification_state.dart';
 import '../bloc/home_stats_cubit.dart';
 import '../bloc/home_stats_state.dart';
 
@@ -28,6 +30,22 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Beranda'),
         automaticallyImplyLeading: false,
+        actions: [
+          BlocBuilder<NotificationCubit, NotificationState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: Badge(
+                  isLabelVisible: state.unreadCount > 0,
+                  label: Text(state.unreadCount.toString()),
+                  child: const Icon(Icons.notifications),
+                ),
+                onPressed: () {
+                  context.push('/notifications');
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<HomeStatsCubit, HomeStatsState>(
         builder: (context, state) {

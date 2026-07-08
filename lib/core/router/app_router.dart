@@ -26,6 +26,9 @@ import '../../features/reports/presentation/bloc/admin_update_status_cubit.dart'
 import '../../features/reports/presentation/pages/admin_dashboard_screen.dart';
 import '../../features/reports/presentation/bloc/dashboard_cubit.dart';
 
+import '../../features/notifications/presentation/pages/notification_list_screen.dart';
+import '../../features/notifications/presentation/bloc/notification_cubit.dart';
+
 import '../../shared/widgets/main_shell_screen.dart';
 import '../../shared/widgets/admin_shell_screen.dart';
 
@@ -114,7 +117,13 @@ final GoRouter appRouter = GoRouter(
               path: '/home',
               pageBuilder: (c, s) => _buildFadeTransition(
                 state: s,
-                child: BlocProvider(create: (_) => sl<HomeStatsCubit>(), child: const HomeScreen()),
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (_) => sl<HomeStatsCubit>()),
+                    BlocProvider(create: (_) => sl<NotificationCubit>()..fetchNotifications()),
+                  ],
+                  child: const HomeScreen(),
+                ),
               ),
             ),
           ],
@@ -174,7 +183,13 @@ final GoRouter appRouter = GoRouter(
               path: '/admin/dashboard',
               pageBuilder: (c, s) => _buildFadeTransition(
                 state: s,
-                child: BlocProvider(create: (_) => sl<DashboardCubit>(), child: const AdminDashboardScreen()),
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (_) => sl<DashboardCubit>()),
+                    BlocProvider(create: (_) => sl<NotificationCubit>()..fetchNotifications()),
+                  ],
+                  child: const AdminDashboardScreen(),
+                ),
               ),
             ),
           ],
@@ -202,6 +217,14 @@ final GoRouter appRouter = GoRouter(
     ),
 
     // --- Top-level routes (no bottom nav, overlay fullscreen) ---
+    GoRoute(
+      path: '/notifications', 
+      parentNavigatorKey: rootNavigatorKey,
+      pageBuilder: (c, s) => _buildSlideTransition(
+        state: s,
+        child: BlocProvider(create: (_) => sl<NotificationCubit>(), child: const NotificationListScreen()),
+      ),
+    ),
     GoRoute(
       path: '/reports/new/step1', 
       parentNavigatorKey: rootNavigatorKey,

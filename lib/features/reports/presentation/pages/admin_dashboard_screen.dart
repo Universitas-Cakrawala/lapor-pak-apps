@@ -8,6 +8,8 @@ import '../bloc/dashboard_cubit.dart';
 import '../bloc/dashboard_state.dart';
 import '../../../../shared/models/dashboard_stats.dart';
 import '../../../../shared/models/weekly_report_item.dart';
+import '../../../notifications/presentation/bloc/notification_cubit.dart';
+import '../../../notifications/presentation/bloc/notification_state.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -29,6 +31,22 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       appBar: AppBar(
         title: const Text('Dashboard Admin'),
         automaticallyImplyLeading: false,
+        actions: [
+          BlocBuilder<NotificationCubit, NotificationState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: Badge(
+                  isLabelVisible: state.unreadCount > 0,
+                  label: Text(state.unreadCount.toString()),
+                  child: const Icon(Icons.notifications),
+                ),
+                onPressed: () {
+                  context.push('/notifications');
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<DashboardCubit, DashboardScreenState>(
         builder: (context, state) {
